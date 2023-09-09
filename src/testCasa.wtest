@@ -1,0 +1,72 @@
+import casa.*
+import cosas.*
+
+
+describe "tests casa" {
+
+	test "puede comprar cosas" {
+		casaDePepeYJulian.comprar(cebollas)
+		casaDePepeYJulian.comprar(tiraDeAsado)
+
+		assert.equals(2, casaDePepeYJulian.cantidadDeCosasCompradas())
+	}
+	
+	test "sabe si tiene comida" {
+		casaDePepeYJulian.comprar(heladera)
+		assert.notThat(casaDePepeYJulian.tieneComida())
+		casaDePepeYJulian.comprar(tiraDeAsado)
+		assert.that(casaDePepeYJulian.tieneComida())
+	}
+	
+	test "si tiene cosas por mas de 90000 es derrochona" {
+		casaDePepeYJulian.comprar(tiraDeAsado)
+		assert.notThat(casaDePepeYJulian.esDerrochona())
+		casaDePepeYJulian.comprar(heladera)
+		assert.that(casaDePepeYJulian.esDerrochona())
+	}
+	
+	test "sabe que es lo mas caro que tiene" {
+		casaDePepeYJulian.comprar(tiraDeAsado)
+		casaDePepeYJulian.comprar(heladera)
+		assert.equals(heladera, casaDePepeYJulian.compraMasCara())
+	}
+	
+	test "sabe los electredomesticos comprados" {
+		casaDePepeYJulian.comprar(plancha)
+		casaDePepeYJulian.comprar(cama)
+		casaDePepeYJulian.comprar(paqueteDeFideos)
+		casaDePepeYJulian.comprar(heladera)
+		assert.equals([plancha, heladera], casaDePepeYJulian.electrodomesticosComprados())
+	}
+	
+	test "sabe cuando están en mala epoca" {
+		casaDePepeYJulian.comprar(salsa)
+		casaDePepeYJulian.comprar(paqueteDeFideos)
+		assert.that(casaDePepeYJulian.malaEpoca())
+		casaDePepeYJulian.comprar(plancha)
+		assert.notThat(casaDePepeYJulian.malaEpoca())
+	}
+	
+	test "sabe que le falta comprar" {
+		casaDePepeYJulian.comprar(salsa)
+		casaDePepeYJulian.comprar(paqueteDeFideos)
+		casaDePepeYJulian.comprar(plancha)
+
+		const faltantes = casaDePepeYJulian.queFaltaComprar([tiraDeAsado, cebollas, salsa, plancha])
+		
+		assert.equals(2, faltantes.size())
+		assert.that(faltantes.contains(tiraDeAsado))
+		assert.that(faltantes.contains(cebollas))
+		
+	}
+	test "sabe si falta comida" {
+		casaDePepeYJulian.comprar(salsa)
+		casaDePepeYJulian.comprar(plancha)
+		assert.that(casaDePepeYJulian.faltaComida())
+		casaDePepeYJulian.comprar(paqueteDeFideos)
+		assert.notThat(casaDePepeYJulian.faltaComida())
+		
+	}
+	
+}
+
