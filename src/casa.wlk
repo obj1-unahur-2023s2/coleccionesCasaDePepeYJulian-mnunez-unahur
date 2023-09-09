@@ -2,8 +2,10 @@ import cosas.* //obviamente, vamos a usar los objetos del archivo cosas ;-)
 
 object casaDePepeYJulian {
 	const cosas = []
+	var property cuentaBancaria
 	
 	method comprar(cosa) {
+		self.gastar(cosa.precio())
 		cosas.add(cosa)
 	}
 	
@@ -35,6 +37,14 @@ object casaDePepeYJulian {
 	
 	method faltaComida() {
 		return cosas.filter({cosa => cosa.esComida()}).size() < 2
+	}
+	
+	method gastar(importe) {
+		cuentaBancaria.extraer(importe)
+	}
+	
+	method dineroDisponible() {
+		return cuentaBancaria.saldo()
 	}
 	
 }

@@ -1,8 +1,17 @@
 import casa.*
 import cosas.*
+import banco.*
 
 
 describe "tests casa" {
+	method initialize() {
+		casaDePepeYJulian.cuentaBancaria(cuentaCorriente)
+		//se agrega saldo inicial para que no fallen los tests
+		casaDePepeYJulian.cuentaBancaria().depositar(300000)
+		
+	}
+
+	
 
 	test "puede comprar cosas" {
 		casaDePepeYJulian.comprar(cebollas)
@@ -65,7 +74,17 @@ describe "tests casa" {
 		assert.that(casaDePepeYJulian.faltaComida())
 		casaDePepeYJulian.comprar(paqueteDeFideos)
 		assert.notThat(casaDePepeYJulian.faltaComida())
+	}
+	
+	test "no puede comprar si se quedó sin plata" {
+		casaDePepeYJulian.comprar(plancha)
+		casaDePepeYJulian.comprar(cama)
+		casaDePepeYJulian.comprar(paqueteDeFideos)
+		casaDePepeYJulian.comprar(heladera)
 		
+		assert.throwsException({
+			casaDePepeYJulian.comprar(microondas)		
+		})
 	}
 	
 }

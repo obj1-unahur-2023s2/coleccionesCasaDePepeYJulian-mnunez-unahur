@@ -1,0 +1,117 @@
+import banco.*
+
+describe "tests de cuenta corriente" {
+	const cuenta = cuentaCorriente
+
+	test "tiene un saldo inicial de 0 pe" {		
+		assert.equals(0, cuenta.saldo())
+	}
+	
+	test "no cobra comisión por depositar" {
+		cuenta.depositar(1000)
+		assert.equals(1000, cuenta.saldo())
+	}
+
+	test "permite extraer sin cobrar comision" {
+		cuenta.depositar(1000)
+		cuenta.extraer(500)
+		assert.equals(500, cuenta.saldo())
+	}
+
+	test "falla si se intenta extraer mas de lo que hay" {
+		cuenta.depositar(1000)
+		assert.throwsException({
+			cuenta.extraer(1001)		
+		})
+	}
+}
+
+
+describe "tests de cuenta con gastos" {
+	const cuenta = cuentaConGastos
+	test "tiene un saldo inicial de 0 pe" {		
+		assert.equals(0, cuenta.saldo())
+	}
+	
+	test "cobra 200 pe de comisión por depositar" {
+		cuenta.depositar(10000)
+		assert.equals(9800, cuenta.saldo())
+	}
+
+	test "no cobra comisión si se extrae 0 pe" {
+		cuenta.depositar(20200)
+		assert.equals(20000, cuenta.saldo())
+		cuenta.extraer(0)
+		assert.equals(20000, cuenta.saldo())
+	}
+	
+	test "cobra 200 pe de comisión si se extrae 10000 pe o menos" {
+		cuenta.depositar(20200)
+		assert.equals(20000, cuenta.saldo())
+		cuenta.extraer(10000)
+		assert.equals(9800, cuenta.saldo())
+	}
+	
+	test "falla si se intenta extraer mas de lo que hay, incluyendo comision" {
+		cuenta.depositar(10000)
+		assert.throwsException({
+			cuenta.extraer(10000)		
+		})
+	}
+
+	test "cobra 2% de comisión si se extrae mas de 10000" {
+		cuenta.depositar(20200)
+		assert.equals(20000, cuenta.saldo())
+		cuenta.extraer(15000)
+		assert.equals(4700, cuenta.saldo())
+	}
+
+	
+}
+
+
+describe "tests de cuenta combinada" {
+	const cuenta = cuentaCombinada
+	
+	method initialize() {
+		cuenta.cuentaPrimaria(cuentaCorriente)
+		cuenta.cuentaSecundaria(cuentaConGastos)
+		
+	}
+	
+	test "tiene un saldo inicial de 0 pe" {
+		assert.equals(0, cuenta.saldo())
+	}
+	
+	test "al depositar, lo hace en la cuenta primaria" {
+		cuenta.depositar(10000)
+		assert.equals(10000, cuenta.cuentaPrimaria().saldo())
+	}
+
+	test "extrae de la cuenta primaria si tiene fondos" {
+		cuenta.depositar(10000)
+		cuenta.extraer(5000)
+		
+		assert.equals(5000, cuenta.cuentaPrimaria().saldo())
+	}
+
+
+	test "extrae lo que pueda de la cuenta primaria, y el resto de la secundaria" {
+		cuenta.depositar(10000)
+		//agrego algo de saldo a la cuenta secundaria para probar
+		cuenta.cuentaSecundaria().depositar(10200)
+		assert.equals(20000, cuenta.saldo())
+
+		cuenta.extraer(15000)
+		
+		assert.equals(4800, cuenta.saldo())
+		assert.equals(4800, cuenta.cuentaSecundaria().saldo())
+	}
+
+
+	
+}
+
+
+
+
