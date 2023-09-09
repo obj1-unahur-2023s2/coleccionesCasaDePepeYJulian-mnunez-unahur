@@ -1,0 +1,83 @@
+import cosas.*
+describe "tests de comestibles" {
+
+	test "la tira de asado es una comida" {
+		assert.that(tiraDeAsado.esComida())
+	}
+	test "la tira de asado es un plato principal" {
+		assert.equals(comidaPrincipal, tiraDeAsado.tipoComida())
+	}
+
+	test "el paquete de fideos es una comida" {
+		assert.that(paqueteDeFideos.esComida())
+	}
+	test "el paquete de fideos un plato principal" {
+		assert.equals(comidaPrincipal, paqueteDeFideos.tipoComida())
+	}
+
+	test "las milanesas son una comida" {
+		assert.that(milanesas.esComida())
+	}
+	test "las milanesas son un plato principal" {
+		assert.equals(comidaPrincipal, milanesas.tipoComida())
+	}
+
+	test "salsa es una comida" {
+		assert.that(salsa.esComida())
+	}
+	test "salsa es un aderezo" {
+		assert.equals(comidaAderezo, salsa.tipoComida())
+	}
+
+	test "cebollas es una comida" {
+		assert.that(salsa.esComida())
+	}
+	test "cebollas es un aderezo" {
+		assert.equals(comidaAderezo, salsa.tipoComida())
+	}
+}
+
+
+describe "Plato Del Dia" {
+	test "es una comida" {
+		assert.that(platoDelDia.esComida())
+	}
+	
+	test "acepta un alimento del tipo comidaPrincipal como plato principal" {
+		platoDelDia.platoPrincipal(tiraDeAsado)
+		assert.equals(tiraDeAsado, platoDelDia.platoPrincipal())
+	}
+	
+	test "falla si el plato principal no es comida" {
+		assert.throwsException({
+			platoDelDia.platoPrincipal(microondas)
+		})
+	}
+
+	test "falla si se intenta colocar aderezo como comida principal" {
+		assert.throwsException({
+			platoDelDia.platoPrincipal(cebollas)
+		})
+	}
+
+	test "acepta un alimento del tipo comidaAderezo como aderezo" {
+		platoDelDia.aderezo(cebollas)
+		assert.equals(cebollas, platoDelDia.aderezo())
+	}
+
+	test "falla si el aderezo no es comida" {
+		assert.throwsException({
+			platoDelDia.aderezo(microondas)
+		})
+	}
+
+	test "el precio es la suma del alimento principal y el aderezo" {
+		platoDelDia.platoPrincipal(tiraDeAsado)
+		platoDelDia.aderezo(cebollas)
+		
+		assert.equals(tiraDeAsado.precio() + cebollas.precio(), platoDelDia.precio())
+	}
+	
+}
+
+
