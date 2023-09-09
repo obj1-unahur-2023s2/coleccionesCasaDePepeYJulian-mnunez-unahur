@@ -62,15 +62,17 @@ object cebollas {
 }
 
 object computadora {
-	const preciouSD = 500
+	const precioUSD = 500
 	
-	method precio() { return preciouSD * dolar.precioDeVenta() }
+	method precio() { return precioUSD * dolar.precioDeVenta() }
 	method esComida() { return false }
 	method esElectrodomestico() { return true }	
 }
 
 object dolar {
-	method precioDeVenta() = 700
+	var property precioBase = 500
+	method precioDeVenta() =precioBase * 1.05
+	method precioDeCompra() =precioBase * 0.95
 }
 
 object platoDelDia {
